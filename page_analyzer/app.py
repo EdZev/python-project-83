@@ -6,7 +6,7 @@ from flask import (
     get_flashed_messages,
     flash,
     url_for
-    )
+)
 from dotenv import load_dotenv
 from jinja2 import Environment, PackageLoader, select_autoescape
 from page_analyzer.utilities import is_valid_url, normalize_url
@@ -30,8 +30,8 @@ def main_page():
     url_data = {}
     template = env.get_template('index.html')
     return template.render(
-        url_for=url_for,
-        url_data=url_data
+        url_data=url_data,
+        url_for=url_for
     )
 
 
@@ -48,12 +48,14 @@ def get_urls():
 @app.get('/urls/<id>')
 def get_url(id):
     url_data = repo.find_urls_by_id(id)
+    checks_data = repo.get_checks(id)
     flashes = get_flashed_messages(with_categories=True)
     messages = [message[1] for message in flashes if message[0] == 'success']
     errors = [error[1] for error in flashes if error[0] == 'error']
     template = env.get_template('url.html')
     return template.render(
         url_data=url_data,
+        checks_data=checks_data,
         messages=messages,
         errors=errors,
         url_for=url_for
@@ -82,6 +84,12 @@ def add_new_url():
     id = repo.save_urls(url_data)
     flash('Page added successfully', 'success')
     return redirect(url_for('get_url', id=id), code=302)
+
+
+@app.post('/urls/<id>/checks')
+def check_url(id):
+    repo.save_check_url(id)
+    return redirect(url_for('get_url', id=id))
 
 
 if __name__ == '__main__':

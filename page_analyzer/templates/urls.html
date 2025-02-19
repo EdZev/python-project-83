@@ -25,8 +25,8 @@
                                 {{url.name}}
                             </a>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>{{url.last_check if url.last_check else ''}}</td>
+                        <td>{{url.code if url.code else ''}}</td>
                     </tr>
                 {% endfor %}
                 {% endif %}
