@@ -17,13 +17,13 @@ def get_seo_data(content):
     soup = BeautifulSoup(content, 'html.parser')
 
     h1 = soup.h1
-    seo_data['h1'] = h1.string if h1 else '-'
+    seo_data['h1'] = h1.string if h1 else ''
 
     title = soup.title.string
-    seo_data['title'] = title.string if title else '-'
+    seo_data['title'] = title.string if title else ''
 
     description = soup.find('meta', attrs={'name': 'description'})
     seo_data['description'] = description.get('content') \
-        if description else '-'
+        if description else ''
 
     return seo_data
