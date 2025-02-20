@@ -65,7 +65,7 @@ def add_new_url():
     url_data = request.form.to_dict()
     validate_url = is_valid_url(url_data['url'])
     if not validate_url:
-        errors = ['alert-danger', 'Некорректный URL']
+        errors = [['alert-danger', 'Некорректный URL']]
         template = env.get_template('index.html')
         return template.render(
             url_data=url_data,
