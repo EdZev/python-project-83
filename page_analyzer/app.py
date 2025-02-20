@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import (
     Flask,
     redirect,
@@ -88,8 +89,21 @@ def add_new_url():
 
 @app.post('/urls/<id>/checks')
 def check_url(id):
-    repo.save_check_url(id)
-    return redirect(url_for('get_url', id=id))
+    url = repo.find_urls_by_id(id)['name']
+    try:
+        r = requests.get(url)
+        status_code = r.status_code
+        if status_code == requests.codes.ok:
+            repo.save_check_url(id, status_code)
+            flash('URL verified successfully', 'success')
+    except requests.ConnectionError:
+        flash('URL check failed: ConnectionError', 'error')
+    except requests.Timeout:
+        flash('URL check failed: Timeout', 'error')
+    except requests.exceptions.RequestException:
+        flash('URL check failed: Error', 'error')
+    finally:
+        return redirect(url_for('get_url', id=id))
 
 
 if __name__ == '__main__':

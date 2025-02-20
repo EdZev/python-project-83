@@ -26,7 +26,7 @@ class UrlRepository:
                             SELECT url_checks.id
                             FROM url_checks
                             WHERE urls.id = url_checks.url_id
-                            ORDER BY url_checks.created_at ASC
+                            ORDER BY url_checks.created_at DESC
                             LIMIT 1
                         )
                     ORDER BY urls.id DESC
@@ -68,7 +68,7 @@ class UrlRepository:
                           ORDER BY id DESC''', (id,))
                 return c.fetchall()
 
-    def save_check_url(self, id):
+    def save_check_url(self, id, status_code):
         current_date = datetime.now().strftime('%Y-%m-%d')
         with self.get_connect() as conn:
             with conn.cursor() as c:
@@ -84,6 +84,6 @@ class UrlRepository:
                         )
                     VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
                     ''',
-                    (id, 0, '', '', '', current_date)
+                    (id, status_code, '', '', '', current_date)
                 )
                 return c.fetchone()[0]
