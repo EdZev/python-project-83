@@ -68,14 +68,14 @@ def add_new_url():
     url_from_db = repo.find_urls_by_name(normalized_url)
     errors = []
     if not validate_url:
-        errors.append('Некорректный URL')
+        errors.append(['alert-danger', 'Некорректный URL'])
     if url_from_db:
-        errors.append('Страница уже существует')
+        errors.append(['alert-danger', 'Страница уже существует'])
     if errors:
         template = env.get_template('index.html')
         return template.render(
             url_data=url_data,
-            errors=errors,
+            messages=errors,
             url_for=url_for
         ), 422
     url_data['url'] = normalized_url
