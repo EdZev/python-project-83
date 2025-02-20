@@ -202,14 +202,9 @@
             </div>
         </nav>
     </header>
-    {% if errors %}
-    {% for error in errors %}
-    <div class="alert alert-danger" role="alert">{{error}}</div>
-    {% endfor %}
-    {% endif %}
     {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-success" role="alert">{{message}}</div>
+    <div class="alert {{message[0]}}" role="alert">{{message[1]}}</div>
     {% endfor %}
     {% endif %}
 

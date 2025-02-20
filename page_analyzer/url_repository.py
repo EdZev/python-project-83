@@ -68,7 +68,7 @@ class UrlRepository:
                           ORDER BY id DESC''', (id,))
                 return c.fetchall()
 
-    def save_check_url(self, id, status_code):
+    def save_check_url(self, id, data):
         current_date = datetime.now().strftime('%Y-%m-%d')
         with self.get_connect() as conn:
             with conn.cursor() as c:
@@ -84,6 +84,13 @@ class UrlRepository:
                         )
                     VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
                     ''',
-                    (id, status_code, '', '', '', current_date)
+                    (
+                        id,
+                        data['status_code'],
+                        data['h1'],
+                        data['title'],
+                        data['description'],
+                        current_date
+                    )
                 )
                 return c.fetchone()[0]
