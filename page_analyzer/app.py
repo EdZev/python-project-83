@@ -64,23 +64,24 @@ def get_url(id):
 def add_new_url():
     url_data = request.form.to_dict()
     validate_url = is_valid_url(url_data['url'])
-    normalized_url = normalize_url(url_data['url'])
-    url_from_db = repo.find_urls_by_name(normalized_url)
-    errors = []
     if not validate_url:
-        errors.append(['alert-danger', 'Некорректный URL'])
-    if url_from_db:
-        errors.append(['alert-danger', 'Страница уже существует'])
-    if errors:
+        errors = ['alert-danger', 'Некорректный URL']
         template = env.get_template('index.html')
         return template.render(
             url_data=url_data,
             messages=errors,
             url_for=url_for
         ), 422
-    url_data['url'] = normalized_url
-    id = repo.save_urls(url_data)
-    flash('Страница успешно добавлена', 'alert-success')
+
+    normalized_url = normalize_url(url_data['url'])
+    url_from_db = repo.find_urls_by_name(normalized_url)
+    if url_from_db:
+        id = url_from_db['id']
+        flash('Страница уже существует', 'alert-info')
+    else:
+        url_data['url'] = normalized_url
+        id = repo.save_urls(url_data)
+        flash('Страница успешно добавлена', 'alert-success')
     return redirect(url_for('get_url', id=id), code=302)
 
 
