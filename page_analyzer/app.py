@@ -96,6 +96,8 @@ def check_url(id):
             seo_data['status_code'] = status_code
             repo.save_check_url(id, seo_data)
             flash('Страница успешно проверена', 'alert-success')
+        else:
+            flash('Произошла ошибка при проверке', 'alert-danger')
     except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
     finally:
