@@ -68,9 +68,9 @@ def add_new_url():
     url_from_db = repo.find_urls_by_name(normalized_url)
     errors = []
     if not validate_url:
-        errors.append('The URL is invalid')
+        errors.append('Некорректный URL')
     if url_from_db:
-        errors.append('This URL already exists')
+        errors.append('Страница уже существует')
     if errors:
         template = env.get_template('index.html')
         return template.render(
@@ -80,7 +80,7 @@ def add_new_url():
         ), 422
     url_data['url'] = normalized_url
     id = repo.save_urls(url_data)
-    flash('Page added successfully', 'alert-success')
+    flash('Страница успешно добавлена', 'alert-success')
     return redirect(url_for('get_url', id=id), code=302)
 
 
@@ -94,13 +94,9 @@ def check_url(id):
             seo_data = get_seo_data(r.content)
             seo_data['status_code'] = status_code
             repo.save_check_url(id, seo_data)
-            flash('URL verified successfully', 'alert-success')
-    except requests.ConnectionError:
-        flash('URL check failed: ConnectionError', 'alert-danger')
-    except requests.Timeout:
-        flash('URL check failed: Timeout', 'alert-danger')
+            flash('Страница успешно проверена', 'alert-success')
     except requests.exceptions.RequestException:
-        flash('URL check failed: Error', 'alert-danger')
+        flash('Произошла ошибка при проверке', 'alert-danger')
     finally:
         return redirect(url_for('get_url', id=id))
 
